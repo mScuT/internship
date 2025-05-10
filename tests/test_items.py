@@ -31,3 +31,9 @@ def test_item_name_consistency() -> None:
     response = client.get("/items")
     names = [item["name"] for item in response.json()]
     assert "Item500000" in names
+
+def test_update_with_short_name() -> None:
+    create_resp = client.post("/items", json={"name": "Apple", "price": 3.5})
+    item_id = create_resp.json()["id"]
+    update_resp = client.put(f"/items/{item_id}", json={"name": "ab"})
+    assert update_resp.status_code == 422
