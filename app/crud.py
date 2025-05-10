@@ -4,8 +4,10 @@ from app.database import items_db
 from app.models import Item, ItemCreate, ItemUpdate
 
 
-def get_items(min_price: float = 0.0) -> List[Item]:
-    return [Item(**item) for item in items_db if item["price"] >= min_price]
+def get_items(min_price: float = 0.0, skip: int = 0, limit: int = 100) -> List[Item]:
+    filtered = (item for item in items_db if item["price"] >= min_price)
+    sliced = list(filtered)[skip:skip + limit]
+    return [Item(**item) for item in sliced]
 
 
 def create_item(item: ItemCreate) -> Item:
