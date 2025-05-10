@@ -10,10 +10,10 @@ class Item(BaseModel):
 
 
 class ItemCreate(BaseModel):
-    name: str = Field(...)
+    name: str = Field(..., min_length=3)
     price: float
 
 
 class ItemUpdate(BaseModel):
-    name: Optional[str] = None
+    name: Optional[str] = Field(default=None, min_length=3)
     price: Optional[float] = None
