@@ -37,3 +37,9 @@ def test_update_with_short_name() -> None:
     item_id = create_resp.json()["id"]
     update_resp = client.put(f"/items/{item_id}", json={"name": "ab"})
     assert update_resp.status_code == 422
+    
+def test_pagination() -> None:
+    for i in range(150):
+        client.post("/items", json={"name": f"Item{i}", "price": i})
+    resp = client.get("/items?min_price=0&skip=100&limit=50")
+    assert len(resp.json()) == 50
