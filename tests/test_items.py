@@ -28,9 +28,27 @@ def test_update_to_duplicate_name() -> None:
 
 
 def test_item_name_consistency() -> None:
-    response = client.get("/items")
-    names = [item["name"] for item in response.json()]
-    assert "Item500000" in names
+    item_name = "TestItem"
+    item_price = 100.0
+    client.post("/items", json={"name": item_name, "price": item_price})
+
+    found = False
+    skip = 0
+    limit = 100
+
+    while True:
+        response = client.get(f"/items?min_price={item_price}&skip={skip}&limit={limit}")
+        items = response.json()
+
+        if not items:
+            break
+
+        if any(item["name"] == item_name for item in items):
+            found = True
+            break
+
+        skip += limit
+    assert found
 
 
 def test_update_with_short_name() -> None:
