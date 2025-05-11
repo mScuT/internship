@@ -32,11 +32,13 @@ def test_item_name_consistency() -> None:
     names = [item["name"] for item in response.json()]
     assert "Item500000" in names
 
+
 def test_update_with_short_name() -> None:
     create_resp = client.post("/items", json={"name": "Apple", "price": 3.5})
     item_id = create_resp.json()["id"]
     update_resp = client.put(f"/items/{item_id}", json={"name": "ab"})
     assert update_resp.status_code == 422
+    
     
 def test_pagination() -> None:
     resp = client.get("/items?min_price=4&skip=50&limit=50")

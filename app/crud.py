@@ -17,12 +17,22 @@ def create_item(item: ItemCreate) -> Item:
     return Item(**new_item)
 
 
+def get_item_by_id(item_id: int) -> dict | None:
+    return next((item for item in items_db if item["id"] == item_id), None)
+
+
 def update_item_by_id(item_id: int, update: ItemUpdate) -> Item | None:
     for item in items_db:
         if item["id"] == item_id:
+            if update.name and any(
+                existing_item["name"] == update.name and existing_item["id"] != item_id
+                for existing_item in items_db
+            ):
+                return None
+
             if update.name:
                 item["name"] = update.name
             if update.price:
                 item["price"] = update.price
+
             return Item(**item)
-    return None
